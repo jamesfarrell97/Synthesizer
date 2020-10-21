@@ -1,0 +1,25 @@
+<Cabbage>
+form caption("Character Sounds"), size(300, 200)
+</Cabbage>
+<CsoundSynthesizer>
+<CsOptions>
+-n -d -m0d
+</CsOptions>
+<CsInstruments>
+sr 	= 	48000 
+ksmps 	= 	32
+nchnls 	= 	2
+0dbfs	=	1 
+
+ 
+instr TEST
+a1 inch 1
+a2 inch 2
+outs a1, a2
+endin
+
+</CsInstruments>
+<CsScore>
+i"TEST" 0 [3600*12]
+</CsScore>
+</CsoundSynthesizer>
