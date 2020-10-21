@@ -1,6 +1,3 @@
-<Cabbage>
-form caption("Character Sounds"), size(300, 200)
-</Cabbage>
 <CsoundSynthesizer>
 <CsOptions>
 -n -d -m0d
