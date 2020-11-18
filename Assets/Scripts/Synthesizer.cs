@@ -6,31 +6,109 @@ using UnityEngine.UI;
 
 public class Synthesizer : MonoBehaviour
 {
+    private readonly int baseToggle = -1;
+
+    private readonly float baseFreq = 100;
+    private readonly float baseAmpl = 0;
+
+    private readonly float baseAtt = 0.1f;
+    private readonly float baseDec = 0.3f;
+    private readonly float baseSus = 0.4f;
+    private readonly float baseRel = 0.2f;
+
     private CsoundUnity csoundUnity;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        csoundUnity = GetComponent<CsoundUnity>();
+
+        #region Channels
+        csoundUnity.setChannel("temp", 90);
+
+        csoundUnity.setChannel("sin", baseToggle);
+        csoundUnity.setChannel("sqr", baseToggle);
+        csoundUnity.setChannel("saw", baseToggle);
+        csoundUnity.setChannel("tri", baseToggle);
+        csoundUnity.setChannel("env", baseToggle);
+        csoundUnity.setChannel("act", baseToggle);
+
+        csoundUnity.setChannel("sinFreq", baseFreq);
+        csoundUnity.setChannel("sqrFreq", baseFreq);
+        csoundUnity.setChannel("sawFreq", baseFreq);
+        csoundUnity.setChannel("triFreq", baseFreq);
+
+        csoundUnity.setChannel("sinAmpl", baseAmpl);
+        csoundUnity.setChannel("sqrAmpl", baseAmpl);
+        csoundUnity.setChannel("sawAmpl", baseAmpl);
+        csoundUnity.setChannel("triAmpl", baseAmpl);
+
+        csoundUnity.setChannel("att", baseAtt);
+        csoundUnity.setChannel("dec", baseDec);
+        csoundUnity.setChannel("sus", baseSus);
+        csoundUnity.setChannel("rel", baseRel);
+        #endregion
+
+        #region Sine
+        sine = baseToggle;
+        sineFrequency = baseFreq;
+        sineAmplitude = baseAmpl;
+        #endregion
+
+        #region Square
+        square = baseToggle;
+        squareFrequency = baseFreq;
+        squareAmplitude = baseAmpl;
+        #endregion
+
+        #region Saw
+        saw = baseToggle;
+        sawFrequency = baseFreq;
+        sawAmplitude = baseAmpl;
+        #endregion
+
+        #region Triangle
+        triangle = baseToggle;
+        triangleFrequency = baseFreq;
+        triangleAmplitude = baseAmpl;
+        #endregion
+
+        #region Envelope
+        envelope = baseToggle;
+        attack = baseAtt;
+        decay = baseDec;
+        sustain = baseSus;
+        release = baseRel;
+        #endregion
+
+        #region Active
+        active = baseToggle;
+        #endregion
+    }
 
     #region Sine
     private float sineAmplitude;
     private float sineFrequency;
-    private int sine = -1;
+    private int sine;
 
     public void SetSineAmplitude(Slider slider)
     {
         sineAmplitude = slider.value;
-        csoundUnity.setChannel("sineAmpl", sineAmplitude);
+        csoundUnity.setChannel("sinAmpl", sineAmplitude);
         Debug.Log(sineAmplitude);
     }
 
     public void SetSineFrequency(Slider slider)
     {
         sineFrequency = slider.value;
-        csoundUnity.setChannel("sineFreq", sineFrequency);
+        csoundUnity.setChannel("sinFreq", sineFrequency);
         Debug.Log(sineFrequency);
     }
 
     public void ToggleSine()
     {
         sine *= -1;
-        csoundUnity.setChannel("sine", sine);
+        csoundUnity.setChannel("sin", sine);
         Debug.Log(sine);
 
     }
@@ -39,31 +117,31 @@ public class Synthesizer : MonoBehaviour
     #region Square
     private float squareAmplitude;
     private float squareFrequency;
-    private int square = -1;
+    private int square;
 
     public void SetSquareAmplitude(Slider slider)
     {
         squareAmplitude = slider.value;
-        csoundUnity.setChannel("squareAmpl", squareAmplitude);
+        csoundUnity.setChannel("sqrAmpl", squareAmplitude);
     }
 
     public void SetSquareFrequency(Slider slider)
     {
         squareFrequency = slider.value;
-        csoundUnity.setChannel("squareFreq", squareFrequency);
+        csoundUnity.setChannel("sqrFreq", squareFrequency);
     }
 
     public void ToggleSquare()
     {
         square *= -1;
-        csoundUnity.setChannel("square", square);
+        csoundUnity.setChannel("sqr", square);
     }
     #endregion
 
     #region Saw
     private float sawAmplitude;
     private float sawFrequency;
-    private int saw = -1;
+    private int saw;
 
     public void SetSawAmplitude(Slider slider)
     {
@@ -87,67 +165,73 @@ public class Synthesizer : MonoBehaviour
     #region Triangle
     private float triangleAmplitude;
     private float triangleFrequency;
-    private int triangle = -1;
+    private int triangle;
 
     public void SetTriangleAmplitude(Slider slider)
     {
         triangleAmplitude = slider.value;
-        csoundUnity.setChannel("triangleAmpl", triangleAmplitude);
+        csoundUnity.setChannel("triAmpl", triangleAmplitude);
     }
 
     public void SetTriangleFrequency(Slider slider)
     {
         triangleFrequency = slider.value;
-        csoundUnity.setChannel("triangleFreq", triangleFrequency);
+        csoundUnity.setChannel("triFreq", triangleFrequency);
     }
 
     public void ToggleTriangle()
     {
         triangle *= -1;
-        csoundUnity.setChannel("triangle", triangle);
+        csoundUnity.setChannel("tri", triangle);
     }
     #endregion
 
-    // Start is called before the first frame update
-    void Start()
+    #region Envelope
+    private float attack;
+    private float decay;
+    private float sustain;
+    private float release;
+    private int envelope;
+
+    public void SetAttack(Slider slider)
     {
-        csoundUnity = GetComponent<CsoundUnity>();
-
-        Debug.Log(sine);
-
-        csoundUnity.setChannel("sine", sine);
-        csoundUnity.setChannel("square", square);
-        csoundUnity.setChannel("saw", saw);
-        csoundUnity.setChannel("triangle", triangle);
+        attack = slider.value;
+        csoundUnity.setChannel("att", attack);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetDecay(Slider slider)
     {
-        //if (sine)
-        //{
-        //    Debug.Log("F: " + sineFrequency);
-        //    Debug.Log("A: " + sineAmplitude);
-        //    csoundUnity.setChannel("sineFreq", sineFrequency);
-        //    csoundUnity.setChannel("sineAmpl", sineAmplitude);
-        //}
-
-        //if (square)
-        //{
-        //    csoundUnity.setChannel("squareFreq", squareFrequency);
-        //    csoundUnity.setChannel("squareAmpl", squareAmplitude);
-        //}
-
-        //if (saw)
-        //{
-        //    csoundUnity.setChannel("sawFreq", sawFrequency);
-        //    csoundUnity.setChannel("sawAmpl", sawAmplitude);
-        //}
-
-        //if (triangle)
-        //{
-        //    csoundUnity.setChannel("triangleFreq", triangleFrequency);
-        //    csoundUnity.setChannel("triangleAmpl", triangleAmplitude);
-        //}
+        decay = slider.value;
+        csoundUnity.setChannel("dec", decay);
     }
+
+    public void SetSustain(Slider slider)
+    {
+        sustain = slider.value;
+        csoundUnity.setChannel("sus", sustain);
+    }
+
+    public void SetRelease(Slider slider)
+    {
+        release = slider.value;
+        csoundUnity.setChannel("rel", release);
+    }
+
+    public void ToggleEnvelope()
+    {
+        envelope *= -1;
+        csoundUnity.setChannel("env", envelope);
+    }
+    #endregion
+
+    #region Active
+    private int active;
+
+    public void ToggleActive()
+    {
+        active *= -1;
+        Debug.Log(active);
+        csoundUnity.setChannel("act", active);
+    }
+    #endregion
 }
