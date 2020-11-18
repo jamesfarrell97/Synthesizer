@@ -20,7 +20,7 @@ instr SYNTH
     kSaw        chnget "saw"
     kTri        chnget "tri"
     kEnv        chnget "env"
-    kAct        chnget "act"
+    kMst        chnget "mst"
 
     kSinFreq    chnget "sinFreq"
     kSqrFreq    chnget "sqrFreq"
@@ -40,83 +40,83 @@ instr SYNTH
     if (metro(kTempo) == 1) then
         ; Sin Wave
         if (changed(kSin) == 1) then
-            if (kSin == 1 && kAct == 1) then
+            if (kSin == 1 && kMst == 1) then
                 event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
             else
                 event "i", -1, 0,   0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kSinFreq) == 1 && kSin == 1 && kAct == 1) then
+        if (changed(kSinFreq) == 1 && kSin == 1 && kMst == 1) then
             event "i", -1, 0,   0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
             event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kSinAmpl) == 1 && kSin == 1 && kAct == 1) then
+        if (changed(kSinAmpl) == 1 && kSin == 1 && kMst == 1) then
             event "i", -1, 0,   0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
             event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
         endif
 
         ; Sqaure Wave
         if (changed(kSqr) == 1) then
-            if (kSqr == 1) then
+            if (kSqr == 1 && kMst == 1) then
                 event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
             else
                 event "i", -2, 0,   0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kSqrFreq) == 1 && kSqr == 1 && kAct == 1) then
+        if (changed(kSqrFreq) == 1 && kSqr == 1 && kMst == 1) then
             event "i", -2, 0,   0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
             event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kSqrAmpl) == 1 && kSqr == 1 && kAct == 1) then
+        if (changed(kSqrAmpl) == 1 && kSqr == 1 && kMst == 1) then
             event "i", -2, 0,   0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
             event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
         endif
 
         ; Saw Wave
         if (changed(kSaw) == 1) then
-            if (kSaw == 1) then
+            if (kSaw == 1 && kMst == 1) then
                 event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
             else
                 event "i", -3, 0,   0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kSawFreq) == 1 && kSaw == 1 && kAct == 1) then
+        if (changed(kSawFreq) == 1 && kSaw == 1 && kMst == 1) then
             event "i", -3, 0,   0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
             event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kSawAmpl) == 1 && kSaw == 1 && kAct == 1) then
+        if (changed(kSawAmpl) == 1 && kSaw == 1 && kMst == 1) then
             event "i", -3, 0,   0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
             event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
         endif
 
         ; Triangle Wave
-        if (changed(kTri) == 1) then
-            if (kTri == 1 && kAct == 1) then
+        if (changed(kTri) == 1 && kMst == 1) then
+            if (kTri == 1 && kMst == 1) then
                 event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
             else
                 event "i", -4, 0,   0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kTriFreq) == 1 && kTri == 1 && kAct == 1) then
+        if (changed(kTriFreq) == 1 && kTri == 1 && kMst == 1) then
             event "i", -4, 0,   0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
             event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kTriAmpl) == 1 && kTri == 1 && kAct == 1) then
+        if (changed(kTriAmpl) == 1 && kTri == 1 && kMst == 1) then
             event "i", -4, 0,   0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
             event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
         endif
             
         ; Active
-        if (changed(kAct) == 1) then
-            if (kAct == 1) then
+        if (changed(kMst) == 1) then
+            if (kMst == 1) then
                 if (kSin == 1) then
                     event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
                 endif
