@@ -15,22 +15,23 @@ giSine  ftgen   0, 0, 2^10, 10, 1
 instr SYNTH
     kTempo      chnget "temp"
 
-    kSin        chnget "sin"
-    kSqr        chnget "sqr"
-    kSaw        chnget "saw"
-    kTri        chnget "tri"
+    kSin1       chnget "sin1"
+    kSin2       chnget "sin2"
+    kSin3       chnget "sin3"
+    kSin4       chnget "sin4"
+
+    kSin1Ampl   chnget "sin1Ampl"
+    kSin2Ampl   chnget "sin2Ampl"
+    kSin3Ampl   chnget "sin3Ampl"
+    kSin4Ampl   chnget "sin4Ampl"
+
+    kSin1Freq   chnget "sin1Freq"
+    kSin2Freq   chnget "sin2Freq"
+    kSin3Freq   chnget "sin3Freq"
+    kSin4Freq   chnget "sin4Freq"
+
     kEnv        chnget "env"
     kMst        chnget "mst"
-
-    kSinFreq    chnget "sinFreq"
-    kSqrFreq    chnget "sqrFreq"
-    kSawFreq    chnget "sawFreq"
-    kTriFreq    chnget "triFreq"
-
-    kSinAmpl    chnget "sinAmpl"
-    kSqrAmpl    chnget "sqrAmpl"
-    kSawAmpl    chnget "sawAmpl"
-    kTriAmpl    chnget "triAmpl"
 
     kAtt        chnget "att"
     kDec        chnget "dec"
@@ -38,105 +39,106 @@ instr SYNTH
     kRel        chnget "rel"
 
     if (metro(kTempo) == 1) then
-        ; Sin Wave
-        if (changed(kSin) == 1) then
-            if (kSin == 1 && kMst == 1) then
-                event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
+
+        ; Sin 1
+        if (changed(kSin1) == 1) then
+            if (kSin1 == 1 && kMst == 1) then
+                event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
             else
-                event "i", -1, 0,   0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
+                event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kSinFreq) == 1 && kSin == 1 && kMst == 1) then
-            event "i", -1, 0,   0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
-            event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin1Freq) == 1 && kSin1 == 1 && kMst == 1) then
+            event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+            event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kSinAmpl) == 1 && kSin == 1 && kMst == 1) then
-            event "i", -1, 0,   0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
-            event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin1Ampl) == 1 && kSin1 == 1 && kMst == 1) then
+            event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+            event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        ; Sqaure Wave
-        if (changed(kSqr) == 1) then
-            if (kSqr == 1 && kMst == 1) then
-                event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
+        ; Sin 2
+        if (changed(kSin2) == 1) then
+            if (kSin2 == 1 && kMst == 1) then
+                event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
             else
-                event "i", -2, 0,   0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
+                event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kSqrFreq) == 1 && kSqr == 1 && kMst == 1) then
-            event "i", -2, 0,   0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
-            event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin2Freq) == 1 && kSin2 == 1 && kMst == 1) then
+            event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
+            event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kSqrAmpl) == 1 && kSqr == 1 && kMst == 1) then
-            event "i", -2, 0,   0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
-            event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin2Ampl) == 1 && kSin2 == 1 && kMst == 1) then
+            event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
+            event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        ; Saw Wave
-        if (changed(kSaw) == 1) then
-            if (kSaw == 1 && kMst == 1) then
-                event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
+        ; Sin 3
+        if (changed(kSin3) == 1) then
+            if (kSin3 == 1 && kMst == 1) then
+                event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
             else
-                event "i", -3, 0,   0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
+                event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kSawFreq) == 1 && kSaw == 1 && kMst == 1) then
-            event "i", -3, 0,   0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
-            event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin3Freq) == 1 && kSin3 == 1 && kMst == 1) then
+            event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
+            event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kSawAmpl) == 1 && kSaw == 1 && kMst == 1) then
-            event "i", -3, 0,   0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
-            event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin3Ampl) == 1 && kSin3 == 1 && kMst == 1) then
+            event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
+            event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        ; Triangle Wave
-        if (changed(kTri) == 1 && kMst == 1) then
-            if (kTri == 1 && kMst == 1) then
-                event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
+        ; Sin 4
+        if (changed(kSin4) == 1 && kMst == 1) then
+            if (kSin4 == 1 && kMst == 1) then
+                event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
             else
-                event "i", -4, 0,   0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
+                event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
             endif
         endif
 
-        if (changed(kTriFreq) == 1 && kTri == 1 && kMst == 1) then
-            event "i", -4, 0,   0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
-            event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin4Freq) == 1 && kSin4 == 1 && kMst == 1) then
+            event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
+            event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
         endif
 
-        if (changed(kTriAmpl) == 1 && kTri == 1 && kMst == 1) then
-            event "i", -4, 0,   0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
-            event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
+        if (changed(kSin4Ampl) == 1 && kSin4 == 1 && kMst == 1) then
+            event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
+            event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
         endif
             
         ; Active
         if (changed(kMst) == 1) then
             if (kMst == 1) then
-                if (kSin == 1) then
-                    event "i",  1, 0, -10, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
+                if (kSin1 == 1) then
+                    event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
                 endif
 
-                if (kSqr == 1) then
-                    event "i",  2, 0, -10, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
+                if (kSin2 == 1) then
+                    event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
                 endif
 
-                if (kSaw == 1) then
-                    event "i",  3, 0, -10, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
+                if (kSin3 == 1) then
+                    event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
                 endif
                 
-                if (kTri == 1) then
-                    event "i",  4, 0, -10, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
+                if (kSin4 == 1) then
+                    event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
                 endif
             else
-                event "i", -1, 0, 0, kSinFreq, kSinAmpl, kAtt, kDec, kSus, kRel
-                event "i", -2, 0, 0, kSqrFreq, kSqrAmpl, kAtt, kDec, kSus, kRel
-                event "i", -3, 0, 0, kSawFreq, kSawAmpl, kAtt, kDec, kSus, kRel
-                event "i", -4, 0, 0, kTriFreq, kTriAmpl, kAtt, kDec, kSus, kRel
+                event "i", -1, 0, 0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+                event "i", -2, 0, 0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
+                event "i", -3, 0, 0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
+                event "i", -4, 0, 0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
             endif
         endif
     endif
@@ -168,13 +170,8 @@ instr 2
     
     kEnv   madsr iAtt, iDec, iSus, iRel
 
-    aOsc1   poscil  kAmpl / 1, kFreq * 1, giSine
-    aOsc3   poscil  kAmpl / 3, kFreq * 3, giSine
-    aOsc5   poscil  kAmpl / 5, kFreq * 5, giSine
-    aOsc7   poscil  kAmpl / 7, kFreq * 7, giSine
-    
-    aOut = aOsc1 + aOsc3 + aOsc5 + aOsc7
-    outs    aOut * kEnv, aOut * kEnv
+    aOut   poscil kAmpl, kFreq, giSine
+    outs   aOut * kEnv, aOut * kEnv
 endin
 
 instr 3
@@ -188,17 +185,8 @@ instr 3
     
     kEnv   madsr iAtt, iDec, iSus, iRel
 
-    aOsc1   poscil  kAmpl / 1, kFreq * 1, giSine
-    aOsc2   poscil  kAmpl / 2, kFreq * 2, giSine
-    aOsc3   poscil  kAmpl / 3, kFreq * 3, giSine
-    aOsc4   poscil  kAmpl / 4, kFreq * 4, giSine
-    aOsc5   poscil  kAmpl / 5, kFreq * 5, giSine
-    aOsc6   poscil  kAmpl / 6, kFreq * 6, giSine
-    aOsc7   poscil  kAmpl / 7, kFreq * 7, giSine
-    aOsc8   poscil  kAmpl / 8, kFreq * 8, giSine
-    
-    aOut = aOsc1 - aOsc2 + aOsc3 - aOsc4 + aOsc5 - aOsc6 + aOsc7 - aOsc8
-    outs    aOut * kEnv, aOut * kEnv
+    aOut   poscil kAmpl, kFreq, giSine
+    outs   aOut * kEnv, aOut * kEnv
 endin
 
 instr 4
@@ -212,18 +200,12 @@ instr 4
     
     kEnv   madsr iAtt, iDec, iSus, iRel
 
-    aOsc1   poscil  kAmpl / 1^2, kFreq * 1, giSine
-    aOsc3   poscil  kAmpl / 3^2, kFreq * 3, giSine
-    aOsc5   poscil  kAmpl / 5^2, kFreq * 5, giSine
-    aOsc7   poscil  kAmpl / 7^2, kFreq * 7, giSine
-    aOsc9   poscil  kAmpl / 9^2, kFreq * 9, giSine
-    
-    aOut = aOsc1 + aOsc3 + aOsc5 + aOsc7 + aOsc9
-    outs    aOut * kEnv, aOut * kEnv
+    aOut   poscil kAmpl, kFreq, giSine
+    outs   aOut * kEnv, aOut * kEnv
 endin
 </CsInstruments>
 
 <CsScore>
-i"SYNTH"   0  [3600 * 12]
+i"SYNTH"   0  [3600 * 120]
 </CsScore>
 </CsoundSynthesizer>

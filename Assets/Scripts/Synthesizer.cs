@@ -1,20 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class Synthesizer : MonoBehaviour
 {
+    [SerializeField] Toggle masterToggle;
+
     private readonly int baseToggle = -1;
 
     private readonly float baseTemp = 60;
-    private readonly float baseFreq = 440;
+    private readonly float baseFreq = 0;
     private readonly float baseAmpl = 0;
 
     private readonly float minFreq = 0;
-    private readonly float maxFreq = 20000;
+    private readonly float maxFreq = 70;
 
     private readonly float minOct = 0;
     private readonly float maxOct = 8;
@@ -24,33 +23,36 @@ public class Synthesizer : MonoBehaviour
     private readonly float baseSus = 0.4f;
     private readonly float baseRel = 0.2f;
 
-    private readonly float c = 16.3518f;
-    private readonly float d = 18.35f;
-    private readonly float e = 20.60f;
-    private readonly float f = 21.83f;
-    private readonly float g = 24.50f;
-    private readonly float a = 27.50f;
+    private readonly float c = 16.3518f;  
+    private readonly float d = 18.35f;    
+    private readonly float e = 20.60f;    
+    private readonly float f = 21.83f;    
+    private readonly float g = 24.50f;    
+    private readonly float a = 27.50f;    
     private readonly float b = 30.87f;
 
-    private float squareAmplitude;
-    private float sineAmplitude;
-    private float sawAmplitude;
-    private float triangleAmplitude;
+    private float deltaCC;
+    private float deltaDC;
+    private float deltaEC;
+    private float deltaFC;
+    private float deltaGC;
+    private float deltaAC;
+    private float deltaBC;
 
-    private float sineFrequency;
-    private float squareFrequency;
-    private float sawFrequency;
-    private float triangleFrequency;
+    private float sin1Amplitude;
+    private float sin2Amplitude;
+    private float sin3Amplitude;
+    private float sin4Amplitude;
 
-    private float originalSineFrequency;
-    private float originalSquareFrequency;
-    private float originalSawFrequency;
-    private float originalTriangleFrequency;
+    private float sin1Frequency;
+    private float sin2Frequency;
+    private float sin3Frequency;
+    private float sin4Frequency;
 
-    private int sineActive;
-    private int squareActive;
-    private int sawActive;
-    private int triangleActive;
+    private int sin1Active;
+    private int sin2Active;
+    private int sin3Active;
+    private int sin4Active;
     private int envelopeActive;
     private int masterActive;
 
@@ -63,31 +65,40 @@ public class Synthesizer : MonoBehaviour
     private int tempo;
 
     private CsoundUnity csoundUnity;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         csoundUnity = GetComponent<CsoundUnity>();
 
+        #region Delta Frequencies
+        deltaCC = (c - c);
+        deltaDC = (d - c);
+        deltaEC = (e - c);
+        deltaFC = (f - c);
+        deltaGC = (g - c);
+        deltaAC = (a - c);
+        deltaBC = (b - c);
+        #endregion
+
         #region Channels
         csoundUnity.setChannel("temp", baseTemp);
-
-        csoundUnity.setChannel("sin", baseToggle);
-        csoundUnity.setChannel("sqr", baseToggle);
-        csoundUnity.setChannel("saw", baseToggle);
-        csoundUnity.setChannel("tri", baseToggle);
         csoundUnity.setChannel("env", baseToggle);
         csoundUnity.setChannel("act", baseToggle);
 
-        csoundUnity.setChannel("sinFreq", baseFreq);
-        csoundUnity.setChannel("sqrFreq", baseFreq);
-        csoundUnity.setChannel("sawFreq", baseFreq);
-        csoundUnity.setChannel("triFreq", baseFreq);
+        csoundUnity.setChannel("sin1", baseToggle);
+        csoundUnity.setChannel("sin2", baseToggle);
+        csoundUnity.setChannel("sin3", baseToggle);
+        csoundUnity.setChannel("sin4", baseToggle);
 
-        csoundUnity.setChannel("sinAmpl", baseAmpl);
-        csoundUnity.setChannel("sqrAmpl", baseAmpl);
-        csoundUnity.setChannel("sawAmpl", baseAmpl);
-        csoundUnity.setChannel("triAmpl", baseAmpl);
+        csoundUnity.setChannel("sin1Ampl", baseAmpl);
+        csoundUnity.setChannel("sin2Ampl", baseAmpl);
+        csoundUnity.setChannel("sin3Ampl", baseAmpl);
+        csoundUnity.setChannel("sin4Ampl", baseAmpl);
+
+        csoundUnity.setChannel("sin1Freq", baseFreq);
+        csoundUnity.setChannel("sin2Freq", baseFreq);
+        csoundUnity.setChannel("sin3Freq", baseFreq);
+        csoundUnity.setChannel("sin4Freq", baseFreq);
 
         csoundUnity.setChannel("att", baseAtt);
         csoundUnity.setChannel("dec", baseDec);
@@ -95,32 +106,31 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("rel", baseRel);
         #endregion
 
-        #region Sine
-        sineActive = baseToggle;
-        sineFrequency = baseFreq;
-        sineAmplitude = baseAmpl;
+        #region Sinw Osc 1
+        sin1Active = baseToggle;
+        sin1Frequency = baseFreq;
+        sin1Amplitude = baseAmpl;
         #endregion
 
-        #region Square
-        squareActive = baseToggle;
-        squareFrequency = baseFreq;
-        squareAmplitude = baseAmpl;
+        #region Sine Osc 2
+        sin2Active = baseToggle;
+        sin2Frequency = baseFreq;
+        sin2Amplitude = baseAmpl;
         #endregion
 
-        #region Saw
-        sawActive = baseToggle;
-        sawFrequency = baseFreq;
-        sawAmplitude = baseAmpl;
+        #region Sine Osc 3
+        sin3Active = baseToggle;
+        sin3Frequency = baseFreq;
+        sin3Amplitude = baseAmpl;
         #endregion
 
-        #region Triangle
-        triangleActive = baseToggle;
-        triangleFrequency = baseFreq;
-        triangleAmplitude = baseAmpl;
+        #region Sine Osc 4
+        sin4Active = baseToggle;
+        sin4Frequency = baseFreq;
+        sin4Amplitude = baseAmpl;
         #endregion
 
         #region Envelope
-        envelopeActive = baseToggle;
         attack = baseAtt;
         decay = baseDec;
         sustain = baseSus;
@@ -128,6 +138,7 @@ public class Synthesizer : MonoBehaviour
         #endregion
 
         #region Active
+        envelopeActive = baseToggle;
         masterActive = baseToggle;
         #endregion
     }
@@ -135,202 +146,212 @@ public class Synthesizer : MonoBehaviour
     private void Update()
     {
         #region Press Key
-        if (Input.GetKeyDown(KeyCode.Alpha1)) // C
+        if (Input.GetKeyDown(KeyCode.Q)) // C
         {
             SetActive();
-            UpdateFrequencies(c);
+            UpdateFrequencies(deltaCC);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2)) // D
+        if (Input.GetKeyDown(KeyCode.W)) // D
         {
             SetActive();
-            UpdateFrequencies(d);
+            UpdateFrequencies(deltaDC);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha3)) // E
+        if (Input.GetKeyDown(KeyCode.E)) // E
         {
             SetActive();
-            UpdateFrequencies(e);
+            UpdateFrequencies(deltaEC);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha4)) // F
+        if (Input.GetKeyDown(KeyCode.R)) // F
         {
             SetActive();
-            UpdateFrequencies(f);
+            UpdateFrequencies(deltaFC);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha5)) // G
+        if (Input.GetKeyDown(KeyCode.T)) // G
         {
             SetActive();
-            UpdateFrequencies(g);
+            UpdateFrequencies(deltaGC);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha6)) // A
+        if (Input.GetKeyDown(KeyCode.Y)) // A
         {
             SetActive();
-            UpdateFrequencies(a);
+            UpdateFrequencies(deltaAC);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha7)) // B
+        if (Input.GetKeyDown(KeyCode.U)) // B
         {
             SetActive();
-            UpdateFrequencies(b);
+            UpdateFrequencies(deltaBC);
         }
         #endregion
 
         #region Release Key
-        if (Input.GetKeyUp(KeyCode.Alpha1)) // C
+        if (Input.GetKeyUp(KeyCode.Q) && !Input.anyKey) // C
         {
-            ResetFrequencies();
             SetInactive();
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha2)) // D
+        if (Input.GetKeyUp(KeyCode.W) && !Input.anyKey) // D
         {
-            ResetFrequencies();
             SetInactive();
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha3)) // E
+        if (Input.GetKeyUp(KeyCode.E) && !Input.anyKey) // E
         {
-            ResetFrequencies();
             SetInactive();
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha4)) // F
+        if (Input.GetKeyUp(KeyCode.R) && !Input.anyKey) // F
         {
-            ResetFrequencies();
             SetInactive();
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha5)) // G
+        if (Input.GetKeyUp(KeyCode.T) && !Input.anyKey) // G
         {
-            ResetFrequencies();
             SetInactive();
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha6)) // A
+        if (Input.GetKeyUp(KeyCode.Y) && !Input.anyKey) // A
         {
-            ResetFrequencies();
             SetInactive();
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha7)) // B
+        if (Input.GetKeyUp(KeyCode.U) && !Input.anyKey) // B
         {
-            ResetFrequencies();
             SetInactive();
         }
         #endregion
     }
 
-    private void UpdateFrequencies(float note)
+    private void UpdateFrequencies(float note = 0)
     {
-        originalSineFrequency = (float) csoundUnity.getChannel("sinFreq");
-        originalSquareFrequency = (float) csoundUnity.getChannel("squareFreq");
-        originalSawFrequency = (float) csoundUnity.getChannel("sawFreq");
-        originalTriangleFrequency = (float) csoundUnity.getChannel("triangleFreq");
-
-        float frequency = note * Mathf.Pow(2, octave);
-
-        csoundUnity.setChannel("sinFreq", frequency);
-        csoundUnity.setChannel("sqrFreq", frequency);
-        csoundUnity.setChannel("sawFreq", frequency);
-        csoundUnity.setChannel("triFreq", frequency);
+        csoundUnity.setChannel("sin1Freq", (sin1Frequency + note) * Mathf.Pow(2, octave));
+        csoundUnity.setChannel("sin2Freq", (sin2Frequency + note) * Mathf.Pow(2, octave));
+        csoundUnity.setChannel("sin3Freq", (sin3Frequency + note) * Mathf.Pow(2, octave));
+        csoundUnity.setChannel("sin4Freq", (sin4Frequency + note) * Mathf.Pow(2, octave));
     }
 
-    private void ResetFrequencies()
+    #region Sine Osc 1
+    public void SetSin1Amplitude(Slider slider)
     {
-        csoundUnity.setChannel("sinFreq", originalSineFrequency);
-        csoundUnity.setChannel("sqrFreq", originalSquareFrequency);
-        csoundUnity.setChannel("sawFreq", originalSawFrequency);
-        csoundUnity.setChannel("triFreq", originalTriangleFrequency);
+        sin1Amplitude = slider.value;
+        csoundUnity.setChannel("sin1Ampl", sin1Amplitude);
     }
 
-    #region Sine
-    public void SetSineAmplitude(Slider slider)
+    public void SetSin1Frequency(TMP_InputField inputField)
     {
-        sineAmplitude = slider.value;
-        csoundUnity.setChannel("sinAmpl", sineAmplitude);
+        float originalFrequency = sin1Frequency;
+
+        if (float.TryParse(inputField.text, out sin1Frequency))
+        {
+            if (sin1Frequency < minFreq || sin1Frequency > maxFreq)
+            {
+                sin1Frequency = originalFrequency;
+                return;
+            }
+        
+            csoundUnity.setChannel("sin1Freq", sin1Frequency * Mathf.Pow(2, octave));
+        }
     }
 
-    public void SetSineFrequency(TMP_InputField inputField)
+    public void ToggleSin1()
     {
-        if (!float.TryParse(inputField.text, out sineFrequency)) return;
-        if (sineFrequency < minFreq || sineFrequency > maxFreq) return;
-
-        csoundUnity.setChannel("sinFreq", sineFrequency);
-    }
-
-    public void ToggleSine()
-    {
-        sineActive *= -1;
-        csoundUnity.setChannel("sin", sineActive);
+        sin1Active *= -1;
+        csoundUnity.setChannel("sin1", sin1Active);
     }
     #endregion
 
-    #region Square
-    public void SetSquareAmplitude(Slider slider)
+    #region Sine Osc 2
+    public void SetSin2Amplitude(Slider slider)
     {
-        squareAmplitude = slider.value;
-        csoundUnity.setChannel("sqrAmpl", squareAmplitude);
+        sin2Amplitude = slider.value;
+        csoundUnity.setChannel("sin2Ampl", sin2Amplitude);
     }
 
-    public void SetSquareFrequency(TMP_InputField inputField)
+    public void SetSin2Frequency(TMP_InputField inputField)
     {
-        if (!float.TryParse(inputField.text, out squareFrequency)) return;
-        if (squareFrequency < minFreq || squareFrequency > maxFreq) return;
+        float originalFrequency = sin2Frequency;
 
-        csoundUnity.setChannel("sqrFreq", squareFrequency);
+        if (float.TryParse(inputField.text, out sin2Frequency))
+        {
+            if (sin2Frequency < minFreq || sin2Frequency > maxFreq)
+            {
+                sin2Frequency = originalFrequency;
+                return;
+            }
+
+            csoundUnity.setChannel("sin2Freq", sin2Frequency * Mathf.Pow(2, octave));
+        }
     }
 
-    public void ToggleSquare()
+    public void ToggleSin2()
     {
-        squareActive *= -1;
-        csoundUnity.setChannel("sqr", squareActive);
-    }
-    #endregion
-
-    #region Saw
-    public void SetSawAmplitude(Slider slider)
-    {
-        sawAmplitude = slider.value;
-        csoundUnity.setChannel("sawAmpl", sawAmplitude);
-    }
-
-    public void SetSawFrequency(TMP_InputField inputField)
-    {
-        if (!float.TryParse(inputField.text, out sawFrequency)) return;
-        if (sawFrequency < minFreq || sawFrequency > maxFreq) return;
-
-        csoundUnity.setChannel("sawFreq", sawFrequency);
-    }
-
-    public void ToggleSaw()
-    {
-        sawActive *= -1;
-        csoundUnity.setChannel("saw", sawActive);
+        sin2Active *= -1;
+        csoundUnity.setChannel("sin2", sin2Active);
     }
     #endregion
 
-    #region Triangle
-    public void SetTriangleAmplitude(Slider slider)
+    #region Sine Osc 3
+    public void SetSin3Amplitude(Slider slider)
     {
-        triangleAmplitude = slider.value;
-        csoundUnity.setChannel("triAmpl", triangleAmplitude);
+        sin3Amplitude = slider.value;
+        csoundUnity.setChannel("sin3Ampl", sin3Amplitude);
     }
 
-    public void SetTriangleFrequency(TMP_InputField inputField)
+    public void SetSin3Frequency(TMP_InputField inputField)
     {
-        if (!float.TryParse(inputField.text, out triangleFrequency)) return;
-        if (triangleFrequency < minFreq || triangleFrequency > maxFreq) return;
+        float originalFrequency = sin3Frequency;
 
-        csoundUnity.setChannel("triFreq", triangleFrequency);
+        if (float.TryParse(inputField.text, out sin3Frequency))
+        {
+            if (sin3Frequency < minFreq || sin3Frequency > maxFreq)
+            {
+                sin3Frequency = originalFrequency;
+                return;
+            }
+
+            csoundUnity.setChannel("sin3Freq", sin3Frequency * Mathf.Pow(2, octave));
+        }
     }
 
-    public void ToggleTriangle()
+    public void ToggleSin3()
     {
-        triangleActive *= -1;
-        csoundUnity.setChannel("tri", triangleActive);
+        sin3Active *= -1;
+        csoundUnity.setChannel("sin3", sin3Active);
+    }
+    #endregion
+
+    #region Sine Osc 4
+    public void SetSin4Amplitude(Slider slider)
+    {
+        sin4Amplitude = slider.value;
+        csoundUnity.setChannel("sin4Ampl", sin4Amplitude);
+    }
+
+    public void SetSin4Frequency(TMP_InputField inputField)
+    {
+        float originalFrequency = sin4Frequency;
+
+        if (float.TryParse(inputField.text, out sin4Frequency))
+        {
+            if (sin4Frequency < minFreq || sin4Frequency > maxFreq)
+            {
+                sin4Frequency = originalFrequency;
+                return;
+            }
+        }
+
+        csoundUnity.setChannel("sin4Freq", sin4Frequency * Mathf.Pow(2, octave));
+    }
+
+    public void ToggleSin4()
+    {
+        sin4Active *= -1;
+        csoundUnity.setChannel("sin4", sin4Active);
     }
     #endregion
 
@@ -370,12 +391,14 @@ public class Synthesizer : MonoBehaviour
     public void SetActive()
     {
         masterActive = 1;
+        masterToggle.gameObject.SetActive(false);
         csoundUnity.setChannel("mst", masterActive);
     }
 
     public void SetInactive()
     {
         masterActive = -1;
+        masterToggle.gameObject.SetActive(true);
         csoundUnity.setChannel("mst", masterActive);
     }
     #endregion
@@ -396,6 +419,8 @@ public class Synthesizer : MonoBehaviour
             octave = originalOctave;
             return;
         }
+
+        UpdateFrequencies();
     }
     #endregion
 
