@@ -9,11 +9,12 @@ ksmps = 32
 nchnls = 2
 0dbfs = 0
 
-// Sine
+// Sine Generator
 giSine  ftgen   0, 0, 2^10, 10, 1
 
 instr SYNTH
     kTempo      chnget "temp"
+    kMst        chnget "mst"
 
     kSin1       chnget "sin1"
     kSin2       chnget "sin2"
@@ -30,96 +31,122 @@ instr SYNTH
     kSin3Freq   chnget "sin3Freq"
     kSin4Freq   chnget "sin4Freq"
 
-    kEnv        chnget "env"
-    kMst        chnget "mst"
-
     kAtt        chnget "att"
     kDec        chnget "dec"
     kSus        chnget "sus"
     kRel        chnget "rel"
 
-    if (metro(kTempo) == 1) then
+    ; Every Update
+    if (metro(kTempo) == 1) then                                                            ; updates kTempo times per second
 
-        ; Sin 1
-        if (changed(kSin1) == 1) then
-            if (kSin1 == 1 && kMst == 1) then
-                event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
-            else
-                event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+        ; For each oscillator, check to see if a value has 
+        ; changed. If a value was changed, stop the previous oscillator
+        ; and create a new instance using the updated values.
+
+        ; Sin 1 Oscillator
+
+        ; On/Off Switch
+        if (changed(kSin1) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+            if (kSin1 == 1) then                                                            ; if oscillator active
+                event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
+            else                                                                            ; else
+                event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel         ; turn off instrument
+            endif                   
+        endif
+
+        ; Frequency Slider
+        if (changed(kSin1Freq) == 1 && kSin1 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+            event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
+        endif
+
+        ; Amplitude Slider
+        if (changed(kSin1Ampl) == 1 && kSin1 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+            event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
+        endif
+
+
+
+        ; Sin 2 Oscillator
+
+        ; On/Off Switch
+        if (changed(kSin2) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+            if (kSin2 == 1) then                                                            ; if oscillator active
+                event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
+            else                                                                            ; else
+                event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel         ; turn off instrument
             endif
         endif
 
-        if (changed(kSin1Freq) == 1 && kSin1 == 1 && kMst == 1) then
-            event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
-            event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+        ; Frequency Slider
+        if (changed(kSin2Freq) == 1 && kSin2 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+            event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
-        if (changed(kSin1Ampl) == 1 && kSin1 == 1 && kMst == 1) then
-            event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
-            event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+        ; Amplitude Slider
+        if (changed(kSin2Ampl) == 1 && kSin2 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+            event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
-        ; Sin 2
-        if (changed(kSin2) == 1) then
-            if (kSin2 == 1 && kMst == 1) then
-                event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
-            else
-                event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
+
+        ; Sin 3 Oscillator
+
+        ; On/Off Switch
+        if (changed(kSin3) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+            if (kSin3 == 1) then                                                            ; if oscillator active
+                event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
+            else                                                                            ; else
+                event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel         ; turn off instrument
             endif
         endif
 
-        if (changed(kSin2Freq) == 1 && kSin2 == 1 && kMst == 1) then
-            event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
-            event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
+        ; Frequency Slider
+        if (changed(kSin3Freq) == 1 && kSin3 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+            event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
-        if (changed(kSin2Ampl) == 1 && kSin2 == 1 && kMst == 1) then
-            event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
-            event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
+        ; Amplitude Slider
+        if (changed(kSin3Ampl) == 1 && kSin3 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+            event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
-        ; Sin 3
-        if (changed(kSin3) == 1) then
-            if (kSin3 == 1 && kMst == 1) then
-                event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
-            else
-                event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
+
+
+        ; Sin 4 Oscillator
+
+        ; On/Off Switch
+        if (changed(kSin4) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+            if (kSin4 == 1) then                                                            ; if oscillator active
+                event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
+            else                                                                            ; else
+                event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel         ; turn off instrument
             endif
         endif
 
-        if (changed(kSin3Freq) == 1 && kSin3 == 1 && kMst == 1) then
-            event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
-            event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
+        ; Frequency Slider
+        if (changed(kSin4Freq) == 1 && kSin4 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+            event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
-        if (changed(kSin3Ampl) == 1 && kSin3 == 1 && kMst == 1) then
-            event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
-            event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
+        ; Amplitude Slider
+        if (changed(kSin4Ampl) == 1 && kSin4 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+            event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
+            event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
-        ; Sin 4
-        if (changed(kSin4) == 1 && kMst == 1) then
-            if (kSin4 == 1 && kMst == 1) then
-                event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
-            else
-                event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
-            endif
-        endif
 
-        if (changed(kSin4Freq) == 1 && kSin4 == 1 && kMst == 1) then
-            event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
-            event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
-        endif
-
-        if (changed(kSin4Ampl) == 1 && kSin4 == 1 && kMst == 1) then
-            event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
-            event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
-        endif
-            
-        ; Active
-        if (changed(kMst) == 1) then
-            if (kMst == 1) then
-                if (kSin1 == 1) then
+        ; Master Switch
+        
+        ; If active switch toggled
+        if (changed(kMst) == 1) then                                                        ; if active switch toggled
+            if (kMst == 1) then                                                             ; if master active
+                if (kSin1 == 1) then                                                        ; turn on all active instruments
                     event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
                 endif
 
@@ -134,8 +161,8 @@ instr SYNTH
                 if (kSin4 == 1) then
                     event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
                 endif
-            else
-                event "i", -1, 0, 0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
+            else                                                                            ; else
+                event "i", -1, 0, 0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel           ; turn off all instruments
                 event "i", -2, 0, 0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel
                 event "i", -3, 0, 0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel
                 event "i", -4, 0, 0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel
@@ -143,6 +170,12 @@ instr SYNTH
         endif
     endif
 endin
+
+; Instruments
+
+; Each instrument creates a simple sine wave using user-defined frequency
+; and amplitude values. Additionally, ADSR values are applied to the instrument
+; to simulate an envelope 
 
 instr 1
     kFreq = p4
@@ -153,10 +186,10 @@ instr 1
     iSus = p8
     iRel = p9
     
-    kEnv   madsr iAtt, iDec, iSus, iRel
-
     aOut   poscil kAmpl, kFreq, giSine
-    outs   aOut * kEnv, aOut * kEnv
+    aEnv   madsr iAtt, iDec, iSus, iRel
+
+    outs   aOut * aEnv, aOut * aEnv
 endin
 
 instr 2
@@ -168,10 +201,10 @@ instr 2
     iSus = p8
     iRel = p9
     
-    kEnv   madsr iAtt, iDec, iSus, iRel
-
     aOut   poscil kAmpl, kFreq, giSine
-    outs   aOut * kEnv, aOut * kEnv
+    aEnv   madsr iAtt, iDec, iSus, iRel
+
+    outs   aOut * aEnv, aOut * aEnv
 endin
 
 instr 3
@@ -183,10 +216,10 @@ instr 3
     iSus = p8
     iRel = p9
     
-    kEnv   madsr iAtt, iDec, iSus, iRel
-
     aOut   poscil kAmpl, kFreq, giSine
-    outs   aOut * kEnv, aOut * kEnv
+    aEnv   madsr iAtt, iDec, iSus, iRel
+
+    outs   aOut * aEnv, aOut * aEnv
 endin
 
 instr 4
@@ -198,10 +231,10 @@ instr 4
     iSus = p8
     iRel = p9
     
-    kEnv   madsr iAtt, iDec, iSus, iRel
-
     aOut   poscil kAmpl, kFreq, giSine
-    outs   aOut * kEnv, aOut * kEnv
+    aEnv   madsr iAtt, iDec, iSus, iRel
+
+    outs   aOut * aEnv, aOut * aEnv
 endin
 </CsInstruments>
 

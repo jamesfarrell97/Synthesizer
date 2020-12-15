@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+using System.Collections;
 
 public class Synthesizer : MonoBehaviour
 {
     [SerializeField] Toggle masterToggle;
+    [SerializeField] Image instrumentActiveIndicator;
 
+    [SerializeField] GameObject instrumentMessage;
+
+    private CsoundUnity csoundUnity;
+
+    #region Constant Parameters
     private readonly int baseToggle = -1;
 
     private readonly int baseTemp = 60;
@@ -17,13 +25,16 @@ public class Synthesizer : MonoBehaviour
     private readonly float minFreq = 0;
     private readonly float maxFreq = 70;
 
-    private readonly float minOct = 0;
-    private readonly float maxOct = 8;
+    private readonly int minOct = 0;
+    private readonly int maxOct = 8;
+
+    private readonly int minTemp = -1;
+    private readonly int maxTemp = 120;
 
     private readonly float baseAtt = 0.1f;
-    private readonly float baseDec = 0.3f;
-    private readonly float baseSus = 0.4f;
-    private readonly float baseRel = 0.2f;
+    private readonly float baseDec = 0.1f;
+    private readonly float baseSus = 0.1f;
+    private readonly float baseRel = 0.1f;
 
     private readonly float c = 16.35f;
     private readonly float cs = 17.32f;
@@ -37,7 +48,9 @@ public class Synthesizer : MonoBehaviour
     private readonly float a = 27.50f;
     private readonly float bf = 29.14f;
     private readonly float b = 30.87f;
+    #endregion
 
+    #region Variable Parameters
     private float deltaCC;
     private float deltaCSC;
     private float deltaDC;
@@ -65,7 +78,6 @@ public class Synthesizer : MonoBehaviour
     private int sin2Active;
     private int sin3Active;
     private int sin4Active;
-    private int envelopeActive;
     private int masterActive;
 
     private float attack;
@@ -76,7 +88,8 @@ public class Synthesizer : MonoBehaviour
     private int octave;
     private int tempo;
 
-    private CsoundUnity csoundUnity;
+    private bool instrumentActive;
+    #endregion
     
     void Start()
     {
@@ -159,9 +172,9 @@ public class Synthesizer : MonoBehaviour
         release = baseRel;
         #endregion
 
-        #region Active
-        envelopeActive = baseToggle;
+        #region Master
         masterActive = baseToggle;
+        instrumentActive = true;
         #endregion
     }
 
@@ -170,72 +183,96 @@ public class Synthesizer : MonoBehaviour
         #region Press Key
         if (Input.GetKeyDown(KeyCode.A)) // C
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaCC);
         }
 
         if (Input.GetKeyDown(KeyCode.W)) // C#
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaCSC);
         }
 
         if (Input.GetKeyDown(KeyCode.S)) // D
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaDC);
         }
 
         if (Input.GetKeyDown(KeyCode.E)) // Eb
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaEFC);
         }
 
         if (Input.GetKeyDown(KeyCode.D)) // E
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaEC);
         }
 
         if (Input.GetKeyDown(KeyCode.F)) // F
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaFC);
         }
 
         if (Input.GetKeyDown(KeyCode.T)) // F#
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaFSC);
         }
 
         if (Input.GetKeyDown(KeyCode.G)) // G
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaGC);
         }
 
         if (Input.GetKeyDown(KeyCode.Y)) // G#
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaGSC);
         }
 
         if (Input.GetKeyDown(KeyCode.H)) // A
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaAC);
         }
 
         if (Input.GetKeyDown(KeyCode.U)) // Bb
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaBFC);
         }
 
         if (Input.GetKeyDown(KeyCode.J)) // B
         {
+            if (!CheckInstrumentActive()) return;
+
             SetActive();
             UpdateFrequencies(deltaBC);
         }
@@ -244,64 +281,100 @@ public class Synthesizer : MonoBehaviour
         #region Release Key
         if (Input.GetKeyUp(KeyCode.A) && !Input.anyKey) // C
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.W) && !Input.anyKey) // C#
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.S) && !Input.anyKey) // D
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.E) && !Input.anyKey) // Eb
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.D) && !Input.anyKey) // E
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.F) && !Input.anyKey) // F
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.T) && !Input.anyKey) // F#
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.G) && !Input.anyKey) // G
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.Y) && !Input.anyKey) // G#
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.H) && !Input.anyKey) // A
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.U) && !Input.anyKey) // Bb
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
 
         if (Input.GetKeyUp(KeyCode.J) && !Input.anyKey) // B
         {
+            if (!CheckInstrumentActive()) return;
+
             SetInactive();
         }
         #endregion
+    }
+
+    #region Methods
+    private bool CheckInstrumentActive()
+    {
+        if (!instrumentActive)
+        {
+            DisplayInstrumentMessage();
+            return false;
+        }
+
+        return true;
     }
 
     private void UpdateFrequencies(float note = 0)
@@ -311,6 +384,24 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("sin3Freq", (sin3Frequency + note) * Mathf.Pow(2, octave));
         csoundUnity.setChannel("sin4Freq", (sin4Frequency + note) * Mathf.Pow(2, octave));
     }
+
+    private void TurnInstrumentOn()
+    {
+        instrumentActiveIndicator.color = Color.green;
+        instrumentActive = true;
+    }
+
+    private void TurnInstrumentOff()
+    {
+        instrumentActiveIndicator.color = Color.red;
+        instrumentActive = false;
+    }
+
+    private void DisplayInstrumentMessage()
+    {
+        instrumentMessage.SetActive(true);
+    }
+    #endregion
 
     #region Sine Osc 1
     public void SetSin1Amplitude(Slider slider)
@@ -439,19 +530,26 @@ public class Synthesizer : MonoBehaviour
     {
         masterActive *= -1;
         csoundUnity.setChannel("mst", masterActive);
+
+        if (masterActive == 1)
+        {
+            TurnInstrumentOff();
+        }
+        else
+        {
+            TurnInstrumentOn();
+        }
     }
 
     public void SetActive()
     {
         masterActive = 1;
-        masterToggle.gameObject.SetActive(false);
         csoundUnity.setChannel("mst", masterActive);
     }
 
     public void SetInactive()
     {
         masterActive = -1;
-        masterToggle.gameObject.SetActive(true);
         csoundUnity.setChannel("mst", masterActive);
     }
     #endregion
@@ -480,7 +578,20 @@ public class Synthesizer : MonoBehaviour
     #region Tempo
     public void SetTempo(TMP_InputField inputField)
     {
-        if (!int.TryParse(inputField.text, out tempo)) return;
+        int originalTempo = tempo;
+
+        if (!int.TryParse(inputField.text, out tempo))
+        {
+            tempo = originalTempo;
+            return;
+        }
+
+        if (tempo < minTemp || tempo > maxTemp)
+        {
+            tempo = originalTempo;
+            return;
+        }
+
         csoundUnity.setChannel("temp", tempo);
     }
     #endregion
