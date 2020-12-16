@@ -10063,10 +10063,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Instructions: Enable the oscillators. Enable and use the oscillators to
-    develop a unique tone. Disable the oscillators once a unique tone is formed.
-    Use your keyboard to control instrument (notes idicated above the keyboard, keycodes
-    indicated below)'
+  m_text: 'Instructions: Enable the oscillators. Enable and use each  oscillator
+    to develop a unique tone. Disable the oscillators once a unique tone is formed.
+    Use your keyboard to control instrument (notes indicated above the keyboard,
+    keycodes indicated below)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

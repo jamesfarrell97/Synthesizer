@@ -10,11 +10,11 @@ nchnls = 2
 0dbfs = 0
 
 // Sine Generator
-giSine  ftgen   0, 0, 2^10, 10, 1
+giSine   ftgen 1, 0, 16384, 10, 1
 
 instr SYNTH
     kTempo      chnget "temp"
-    kMst        chnget "mst"
+    kOsc        chnget "osc"
 
     kSin1       chnget "sin1"
     kSin2       chnget "sin2"
@@ -46,7 +46,7 @@ instr SYNTH
         ; Sin 1 Oscillator
 
         ; On/Off Switch
-        if (changed(kSin1) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+        if (changed(kSin1) == 1 && kOsc == 1) then                                          ; if active switch toggled, and oscillators active
             if (kSin1 == 1) then                                                            ; if oscillator active
                 event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
             else                                                                            ; else
@@ -55,13 +55,13 @@ instr SYNTH
         endif
 
         ; Frequency Slider
-        if (changed(kSin1Freq) == 1 && kSin1 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+        if (changed(kSin1Freq) == 1 && kSin1 == 1 && kOsc == 1) then                        ; if frequency changed, and this oscillator active, and all oscillators active
             event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
         ; Amplitude Slider
-        if (changed(kSin1Ampl) == 1 && kSin1 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+        if (changed(kSin1Ampl) == 1 && kSin1 == 1 && kOsc == 1) then                        ; if amplitude changed, and this oscillator active, and all oscillators active
             event "i", -1, 0,   0, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
@@ -71,7 +71,7 @@ instr SYNTH
         ; Sin 2 Oscillator
 
         ; On/Off Switch
-        if (changed(kSin2) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+        if (changed(kSin2) == 1 && kOsc == 1) then                                          ; if active switch toggled, and oscillators active
             if (kSin2 == 1) then                                                            ; if oscillator active
                 event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
             else                                                                            ; else
@@ -80,13 +80,13 @@ instr SYNTH
         endif
 
         ; Frequency Slider
-        if (changed(kSin2Freq) == 1 && kSin2 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+        if (changed(kSin2Freq) == 1 && kSin2 == 1 && kOsc == 1) then                        ; if frequency changed, and this oscillator active, and all oscillators active
             event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
         ; Amplitude Slider
-        if (changed(kSin2Ampl) == 1 && kSin2 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+        if (changed(kSin2Ampl) == 1 && kSin2 == 1 && kOsc == 1) then                        ; if amplitude changed, and this oscillator active, and all oscillators active
             event "i", -2, 0,   0, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  2, 0, -10, kSin2Freq, kSin2Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
@@ -95,7 +95,7 @@ instr SYNTH
         ; Sin 3 Oscillator
 
         ; On/Off Switch
-        if (changed(kSin3) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+        if (changed(kSin3) == 1 && kOsc == 1) then                                          ; if active switch toggled, and oscillators active
             if (kSin3 == 1) then                                                            ; if oscillator active
                 event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
             else                                                                            ; else
@@ -104,13 +104,13 @@ instr SYNTH
         endif
 
         ; Frequency Slider
-        if (changed(kSin3Freq) == 1 && kSin3 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+        if (changed(kSin3Freq) == 1 && kSin3 == 1 && kOsc == 1) then                        ; if frequency changed, and this oscillator active, and all oscillators active
             event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
         ; Amplitude Slider
-        if (changed(kSin3Ampl) == 1 && kSin3 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+        if (changed(kSin3Ampl) == 1 && kSin3 == 1 && kOsc == 1) then                        ; if amplitude changed, and this oscillator active, and all oscillators active
             event "i", -3, 0,   0, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  3, 0, -10, kSin3Freq, kSin3Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
@@ -120,7 +120,7 @@ instr SYNTH
         ; Sin 4 Oscillator
 
         ; On/Off Switch
-        if (changed(kSin4) == 1 && kMst == 1) then                                          ; if active switch toggled, and master active
+        if (changed(kSin4) == 1 && kOsc == 1) then                                          ; if active switch toggled, and oscillators active
             if (kSin4 == 1) then                                                            ; if oscillator active
                 event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel         ; turn on instrument
             else                                                                            ; else
@@ -129,23 +129,23 @@ instr SYNTH
         endif
 
         ; Frequency Slider
-        if (changed(kSin4Freq) == 1 && kSin4 == 1 && kMst == 1) then                        ; if frequency changed, and oscillator active, and master active
+        if (changed(kSin4Freq) == 1 && kSin4 == 1 && kOsc == 1) then                        ; if frequency changed, and this oscillator active, and all oscillators active
             event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
         ; Amplitude Slider
-        if (changed(kSin4Ampl) == 1 && kSin4 == 1 && kMst == 1) then                        ; if amplitude changed, and oscillator active, and master active
+        if (changed(kSin4Ampl) == 1 && kSin4 == 1 && kOsc == 1) then                        ; if amplitude changed, and this oscillator active, and all oscillators active
             event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
 
 
-        ; Master Switch
+        ; Oscillators Switch
         
         ; If active switch toggled
-        if (changed(kMst) == 1) then                                                        ; if active switch toggled
-            if (kMst == 1) then                                                             ; if master active
+        if (changed(kOsc) == 1) then                                                        ; if oscialltor switch toggled
+            if (kOsc == 1) then                                                             ; if oscillators active
                 if (kSin1 == 1) then                                                        ; turn on all active instruments
                     event "i",  1, 0, -10, kSin1Freq, kSin1Ampl, kAtt, kDec, kSus, kRel
                 endif

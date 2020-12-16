@@ -117,8 +117,7 @@ public class Synthesizer : MonoBehaviour
 
         #region Channels
         csoundUnity.setChannel("temp", baseTemp);
-        csoundUnity.setChannel("env", baseToggle);
-        csoundUnity.setChannel("act", baseToggle);
+        csoundUnity.setChannel("osc", baseToggle);
 
         csoundUnity.setChannel("sin1", baseToggle);
         csoundUnity.setChannel("sin2", baseToggle);
@@ -141,7 +140,7 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("rel", baseRel);
         #endregion
 
-        #region Sinw Osc 1
+        #region Sine Osc 1
         sin1Active = baseToggle;
         sin1Frequency = baseFreq;
         sin1Amplitude = baseAmpl;
@@ -283,6 +282,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -290,6 +290,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -297,6 +298,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -304,6 +306,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -311,6 +314,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -318,6 +322,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -325,6 +330,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -332,6 +338,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -339,6 +346,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -346,6 +354,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -353,6 +362,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
 
@@ -360,6 +370,7 @@ public class Synthesizer : MonoBehaviour
         {
             if (!CheckInstrumentActive()) return;
 
+            UpdateFrequencies();
             SetInactive();
         }
         #endregion
@@ -529,7 +540,7 @@ public class Synthesizer : MonoBehaviour
     public void ToggleActive()
     {
         masterActive *= -1;
-        csoundUnity.setChannel("mst", masterActive);
+        csoundUnity.setChannel("osc", masterActive);
 
         if (masterActive == 1)
         {
@@ -544,13 +555,13 @@ public class Synthesizer : MonoBehaviour
     public void SetActive()
     {
         masterActive = 1;
-        csoundUnity.setChannel("mst", masterActive);
+        csoundUnity.setChannel("osc", masterActive);
     }
 
     public void SetInactive()
     {
         masterActive = -1;
-        csoundUnity.setChannel("mst", masterActive);
+        csoundUnity.setChannel("osc", masterActive);
     }
     #endregion
 
