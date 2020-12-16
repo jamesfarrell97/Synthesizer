@@ -1,19 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
-using System.Collections;
 
 public class Synthesizer : MonoBehaviour
 {
-    [SerializeField] Toggle masterToggle;
-    [SerializeField] Image instrumentActiveIndicator;
+    #region Serialzed Fields
+
+    // Exposed to Unity
 
     [SerializeField] GameObject instrumentMessage;
+    [SerializeField] Image instrumentActiveIndicator;
+    [SerializeField] Toggle masterToggle;
+
+    #endregion
+
+    #region Private Fields
 
     private CsoundUnity csoundUnity;
 
+    #endregion
+
     #region Constant Parameters
+
+    // Initial values
+
     private readonly int baseToggle = -1;
 
     private readonly int baseTemp = 60;
@@ -21,6 +31,13 @@ public class Synthesizer : MonoBehaviour
 
     private readonly float baseFreq = 35;
     private readonly float baseAmpl = 0;
+
+    private readonly float baseAtt = 0.1f;
+    private readonly float baseDec = 0.1f;
+    private readonly float baseSus = 0.1f;
+    private readonly float baseRel = 0.1f;
+
+    // Value ranges
 
     private readonly float minFreq = 0;
     private readonly float maxFreq = 70;
@@ -31,12 +48,10 @@ public class Synthesizer : MonoBehaviour
     private readonly int minTemp = -1;
     private readonly int maxTemp = 120;
 
-    private readonly float baseAtt = 0.1f;
-    private readonly float baseDec = 0.1f;
-    private readonly float baseSus = 0.1f;
-    private readonly float baseRel = 0.1f;
+    // Equal tempered scale frequency values
+    // https://pages.mtu.edu/~suits/notefreqs.html
 
-    private readonly float c = 16.35f;
+    private readonly float c = 16.35f; 
     private readonly float cs = 17.32f;
     private readonly float d = 18.35f;
     private readonly float ef = 19.45f;
@@ -48,9 +63,13 @@ public class Synthesizer : MonoBehaviour
     private readonly float a = 27.50f;
     private readonly float bf = 29.14f;
     private readonly float b = 30.87f;
+
     #endregion
 
     #region Variable Parameters
+
+    // Delta note values (frequency of each note relative to c)
+
     private float deltaCC;
     private float deltaCSC;
     private float deltaDC;
@@ -63,6 +82,8 @@ public class Synthesizer : MonoBehaviour
     private float deltaAC;
     private float deltaBFC;
     private float deltaBC;
+
+    // Oscillator values
 
     private float sin1Amplitude;
     private float sin2Amplitude;
@@ -78,29 +99,38 @@ public class Synthesizer : MonoBehaviour
     private int sin2Active;
     private int sin3Active;
     private int sin4Active;
-    private int masterActive;
+
+    // Envelope values
 
     private float attack;
     private float decay;
     private float sustain;
     private float release;
 
+    // Master values
+
+    private int masterActive;
+    private bool instrumentActive;
+
     private int octave;
     private int tempo;
 
-    private bool instrumentActive;
     #endregion
-    
+
     void Start()
     {
-        csoundUnity = GetComponent<CsoundUnity>();
+        // Retrieves and initialises the Csound component
 
-        #region Master
-        tempo = baseTemp;
-        octave = baseOctave;
+        #region CSound Initialisation
+
+        csoundUnity = GetComponent<CsoundUnity>();
+        
         #endregion
 
+        // Calculate frequencies relative to bottom c
+        
         #region Delta Frequencies
+
         deltaCC = (c - c);
         deltaCSC = (cs - c);
         deltaDC = (d - c);
@@ -113,9 +143,13 @@ public class Synthesizer : MonoBehaviour
         deltaAC = (a - c);
         deltaBFC = (bf - c);
         deltaBC = (b - c);
+
         #endregion
 
+        // Initialise Csound channels
+        
         #region Channels
+
         csoundUnity.setChannel("temp", baseTemp);
         csoundUnity.setChannel("osc", baseToggle);
 
@@ -138,48 +172,87 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("dec", baseDec);
         csoundUnity.setChannel("sus", baseSus);
         csoundUnity.setChannel("rel", baseRel);
+
         #endregion
 
+        // Initialise oscillator values
+
         #region Sine Osc 1
+
         sin1Active = baseToggle;
         sin1Frequency = baseFreq;
         sin1Amplitude = baseAmpl;
+
         #endregion
 
         #region Sine Osc 2
+
         sin2Active = baseToggle;
         sin2Frequency = baseFreq;
         sin2Amplitude = baseAmpl;
+
         #endregion
 
         #region Sine Osc 3
+
         sin3Active = baseToggle;
         sin3Frequency = baseFreq;
         sin3Amplitude = baseAmpl;
+
         #endregion
 
         #region Sine Osc 4
+
         sin4Active = baseToggle;
         sin4Frequency = baseFreq;
         sin4Amplitude = baseAmpl;
+
         #endregion
 
+        // Initialise Envelope values
+
         #region Envelope
+
         attack = baseAtt;
         decay = baseDec;
         sustain = baseSus;
         release = baseRel;
+
         #endregion
 
+        // Initialise master values
+
         #region Master
+
         masterActive = baseToggle;
         instrumentActive = true;
+
+        tempo = baseTemp;
+        octave = baseOctave;
+
         #endregion
     }
 
     private void Update()
     {
+        // Checks for a key press. Each key is linked to a specific note For 
+        // example, if the A key is pressed, the user is requesting that the 
+        // C note is played
+        //
+
+        // Press Key
+        //
+        // Check if the instrument is active (checks if the oscillators are
+        // on, the oscillators and the instrument cannot be played at the 
+        // same time).
+        //
+        // If the instrument is not active, return. If the instrument is
+        // active, update the frequencies of all oscillators and turn any 
+        // active oscillator on.
+        //
+
         #region Press Key
+
         if (Input.GetKeyDown(KeyCode.A)) // C
         {
             if (!CheckInstrumentActive()) return;
@@ -275,9 +348,22 @@ public class Synthesizer : MonoBehaviour
             SetActive();
             UpdateFrequencies(deltaBC);
         }
+
         #endregion
 
+        // Release Key
+        //
+        // Check if the instrument is active (checks if the oscillators are
+        // on, the oscillators and the instrument cannot be played at the 
+        // same time).
+        //
+        // If the instrument is not active, return. If the instrument is
+        // active, reset the frequencies of all oscillators and turn all
+        // oscillators off.
+        //
+
         #region Release Key
+
         if (Input.GetKeyUp(KeyCode.A) && !Input.anyKey) // C
         {
             if (!CheckInstrumentActive()) return;
@@ -373,10 +459,20 @@ public class Synthesizer : MonoBehaviour
             UpdateFrequencies();
             SetInactive();
         }
+
         #endregion
     }
 
     #region Methods
+
+    /// <summary>
+    /// Checks if the instrument is currently active. If the instrument
+    /// is not active, display error message and return false. Otherwsie,
+    /// return true.
+    /// </summary>
+    /// <returns>
+    /// true if instrument active, false if instrument not active
+    /// </returns>
     private bool CheckInstrumentActive()
     {
         if (!instrumentActive)
@@ -388,6 +484,14 @@ public class Synthesizer : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Updates the frequencies of all oscillators, based on an input
+    /// note. Calculates the desired note frequency relative to the 
+    /// user-defined frequency of each oscillator.
+    /// </summary>
+    /// <param name="note">
+    /// delta frequency from c of the desired note
+    /// </param>
     private void UpdateFrequencies(float note = 0)
     {
         csoundUnity.setChannel("sin1Freq", (sin1Frequency + note) * Mathf.Pow(2, octave));
@@ -396,25 +500,47 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("sin4Freq", (sin4Frequency + note) * Mathf.Pow(2, octave));
     }
 
+    /// <summary>
+    /// Marks the instrument as active and sets the indicator colour to
+    /// green
+    /// </summary>
     private void TurnInstrumentOn()
     {
         instrumentActiveIndicator.color = Color.green;
         instrumentActive = true;
     }
 
+    /// <summary>
+    /// Marks the instrument as inactive and sets the indicator colour to
+    /// red
+    /// </summary>
     private void TurnInstrumentOff()
     {
         instrumentActiveIndicator.color = Color.red;
         instrumentActive = false;
     }
 
+    /// <summary>
+    /// Displays an instrument error message to the user
+    /// </summary>
     private void DisplayInstrumentMessage()
     {
         instrumentMessage.SetActive(true);
     }
+
     #endregion
 
+    // Sine Oscillators
+    //
+    // Each oscillator contains three functions which control
+    // a corresponding instrument within csound. The toggle function
+    // toggles each instrument on or off. The set frequency and set
+    // amplitude fucntions update the frequency and amplitude values
+    // of the corresponding oscillator, respectively.
+    //
+
     #region Sine Osc 1
+
     public void SetSin1Amplitude(Slider slider)
     {
         sin1Amplitude = slider.value;
@@ -436,9 +562,11 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("sin1Freq", sin1Frequency * Mathf.Pow(2, octave));
         csoundUnity.setChannel("sin1", sin1Active);
     }
+
     #endregion
 
     #region Sine Osc 2
+
     public void SetSin2Amplitude(Slider slider)
     {
         sin2Amplitude = slider.value;
@@ -460,9 +588,11 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("sin2Freq", sin2Frequency * Mathf.Pow(2, octave));
         csoundUnity.setChannel("sin2", sin2Active);
     }
+
     #endregion
 
     #region Sine Osc 3
+
     public void SetSin3Amplitude(Slider slider)
     {
         sin3Amplitude = slider.value;
@@ -484,9 +614,11 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("sin3Freq", sin3Frequency * Mathf.Pow(2, octave));
         csoundUnity.setChannel("sin3", sin3Active);
     }
+
     #endregion
 
     #region Sine Osc 4
+
     public void SetSin4Amplitude(Slider slider)
     {
         sin4Amplitude = slider.value;
@@ -508,9 +640,18 @@ public class Synthesizer : MonoBehaviour
         csoundUnity.setChannel("sin4Freq", sin4Frequency * Mathf.Pow(2, octave));
         csoundUnity.setChannel("sin4", sin4Active);
     }
+
     #endregion
 
+    // Envelope
+    //
+    // The set attack, set decay, set sustain, and set release functions
+    // set the attack, decay, sustain, and release values of all 
+    // instruments, respectively.
+    //
+
     #region Envelope
+
     public void SetAttack(Slider slider)
     {
         attack = slider.value;
@@ -534,9 +675,20 @@ public class Synthesizer : MonoBehaviour
         release = slider.value;
         csoundUnity.setChannel("rel", release);
     }
+
     #endregion
 
+    // Master
+    //
+    // The toggle active function toggles the oscillators on or off.
+    // The set active and set inactive functions turn the oscillators on or 
+    // off, respectively. The set octave function sets the synthesizers
+    // current octave. The set tempo function sets the synthesizers update
+    // speed (tempo times per second).
+    // 
+
     #region Master
+
     public void ToggleActive()
     {
         masterActive *= -1;
@@ -563,9 +715,7 @@ public class Synthesizer : MonoBehaviour
         masterActive = -1;
         csoundUnity.setChannel("osc", masterActive);
     }
-    #endregion
 
-    #region Octave
     public void SetOctave(TMP_InputField inputField)
     {
         int originalOctave = octave;
@@ -584,9 +734,7 @@ public class Synthesizer : MonoBehaviour
 
         UpdateFrequencies();
     }
-    #endregion
 
-    #region Tempo
     public void SetTempo(TMP_InputField inputField)
     {
         int originalTempo = tempo;
@@ -605,5 +753,6 @@ public class Synthesizer : MonoBehaviour
 
         csoundUnity.setChannel("temp", tempo);
     }
+
     #endregion
 }

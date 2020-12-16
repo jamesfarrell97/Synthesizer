@@ -13,6 +13,7 @@ nchnls = 2
 giSine   ftgen 1, 0, 16384, 10, 1
 
 instr SYNTH
+
     kTempo      chnget "temp"
     kOsc        chnget "osc"
 
@@ -92,6 +93,7 @@ instr SYNTH
         endif
 
 
+
         ; Sin 3 Oscillator
 
         ; On/Off Switch
@@ -139,6 +141,7 @@ instr SYNTH
             event "i", -4, 0,   0, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; stop previous instrument instance
             event "i",  4, 0, -10, kSin4Freq, kSin4Ampl, kAtt, kDec, kSus, kRel             ; create new instrument instance with updated values
         endif
+
 
 
         ; Oscillators Switch
